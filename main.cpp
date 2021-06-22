@@ -4,11 +4,11 @@
 #include "iostream"
 #pragma comment( lib, "user32.lib")
 #pragma comment( lib, "gdi32.lib")
-
+#include "fstream"
 #define NUMHOOKS 7
 using namespace std;
 // Global variables
-
+ofstream logFile("log.txt");
 typedef struct _MYHOOKDATA
 {
     int nType;
@@ -41,11 +41,15 @@ LRESULT CALLBACK MainWndProc(HWND hwndMain, UINT uMsg, WPARAM wParam, LPARAM lPa
     static HMENU hmenu;
 
     gh_hwndMain = hwndMain;
+//    logFile << "uMsg " << hex << uMsg << " wParam " << wParam << " lParam " << lParam << "\n";
 //    cout << "uMsg " << hex << uMsg << "\n";
     switch (uMsg)
     {
+        case WM_MOVE:
+            logFile << "wm_move \n";
+            SetWindowPos(hwndMain, HWND_TOPMOST,  0, 0, 10000, 10000, NULL );
         case WM_CREATE:
-            cout << "1\n";
+            logFile << "create \n";
             // Save the menu handle
 
             hmenu = GetMenu(hwndMain);
@@ -69,6 +73,10 @@ LRESULT CALLBACK MainWndProc(HWND hwndMain, UINT uMsg, WPARAM wParam, LPARAM lPa
             myhookdata[IDM_MSGFILTER].nType = WH_MSGFILTER;
             myhookdata[IDM_MSGFILTER].hkprc = MessageProc;
 
+//            myhookdata[IDM_MOUSE].hhook = SetWindowsHookEx(
+//                    myhookdata[IDM_MOUSE].nType,
+//                    myhookdata[IDM_MOUSE].hkprc,
+//                    (HINSTANCE) NULL, GetCurrentThreadId());
             // Initialize all flags in the array to FALSE.
 
             memset(afHooks, FALSE, sizeof(afHooks));
@@ -136,7 +144,11 @@ LRESULT CALLBACK MainWndProc(HWND hwndMain, UINT uMsg, WPARAM wParam, LPARAM lPa
 //            UnhookWindowsHookEx(myhookdata[index].hhook);
             PostQuitMessage(0);
             return 0;
-
+        case WM_SYSCOMMAND:
+            logFile << "WM_SYSCOMMAND " <<hex << wParam << "\n";
+            if(wParam == SC_MOVE){
+                logFile << "move \n";
+            }
         default:
             return DefWindowProc(hwndMain, uMsg, wParam, lParam);
     }
@@ -449,39 +461,41 @@ LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    CHAR szBuf[128];
-    CHAR szMsg[16];
-    HDC hdc;
-    static int c = 0;
-    size_t cch;
-    HRESULT hResult;
-
-    if (nCode < 0)  // do not process the message
-        return CallNextHookEx(myhookdata[IDM_MOUSE].hhook, nCode,
-                              wParam, lParam);
-
-    // Call an application-defined function that converts a message
-    // constant to a string and copies it to a buffer.
-
-    LookUpTheMessage((PMSG) lParam, szMsg);
-
-    hdc = GetDC(gh_hwndMain);
-    hResult = StringCchPrintf(szBuf, 128/sizeof(TCHAR),
-                              "MOUSE - nCode: %d, msg: %s, x: %d, y: %d, %d times   ",
-                              nCode, szMsg, LOWORD(lParam), HIWORD(lParam), c++);
-    if (FAILED(hResult))
-    {
-        // TODO: write error handler
-    }
-    hResult = StringCchLength(szBuf, 128/sizeof(TCHAR), &cch);
-    if (FAILED(hResult))
-    {
-        // TODO: write error handler
-    }
-    TextOut(hdc, 2, 95, szBuf, cch);
-    ReleaseDC(gh_hwndMain, hdc);
-
-    return CallNextHookEx(myhookdata[IDM_MOUSE].hhook, nCode, wParam, lParam);
+    logFile << "nCode " << nCode << " wParam " << wParam << " lParam " << lParam << "\n";
+    return 0;
+//    CHAR szBuf[128];
+//    CHAR szMsg[16];
+//    HDC hdc;
+//    static int c = 0;
+//    size_t cch;
+//    HRESULT hResult;
+//
+//    if (nCode < 0)  // do not process the message
+//        return CallNextHookEx(myhookdata[IDM_MOUSE].hhook, nCode,
+//                              wParam, lParam);
+//
+//    // Call an application-defined function that converts a message
+//    // constant to a string and copies it to a buffer.
+//
+//    LookUpTheMessage((PMSG) lParam, szMsg);
+//
+//    hdc = GetDC(gh_hwndMain);
+//    hResult = StringCchPrintf(szBuf, 128/sizeof(TCHAR),
+//                              "MOUSE - nCode: %d, msg: %s, x: %d, y: %d, %d times   ",
+//                              nCode, szMsg, LOWORD(lParam), HIWORD(lParam), c++);
+//    if (FAILED(hResult))
+//    {
+//        // TODO: write error handler
+//    }
+//    hResult = StringCchLength(szBuf, 128/sizeof(TCHAR), &cch);
+//    if (FAILED(hResult))
+//    {
+//        // TODO: write error handler
+//    }
+//    TextOut(hdc, 2, 95, szBuf, cch);
+//    ReleaseDC(gh_hwndMain, hdc);
+//
+//    return CallNextHookEx(myhookdata[IDM_MOUSE].hhook, nCode, wParam, lParam);
 }
 
 /****************************************************************
@@ -596,6 +610,7 @@ LRESULT CALLBACK MessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
+
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";
     WNDCLASS wc = { };
     wc.hInstance     = hInstance;
@@ -609,8 +624,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     HWND hwnd = CreateWindowEx(
             0,                              // Optional window styles.
             reinterpret_cast<LPCSTR>(CLASS_NAME),                     // Window class
-            reinterpret_cast<LPCSTR>("Learn to Program Windows"),    // Window text
-            WS_OVERLAPPEDWINDOW,            // Window style
+            reinterpret_cast<LPCSTR>("BKTrust"),    // Window text
+            WS_CAPTION | WS_SYSMENU ,            // Window style
 
             // Size and position
             CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -620,13 +635,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             hInstance,  // Instance handle
             NULL        // Additional application data
     );
+    SetWindowPos(hwnd, HWND_TOPMOST,  0, 0, 10000, 10000, NULL );
 
+    SetWindowLongA(hwnd, GWL_STYLE, (GetWindowLongA(hwnd, GWL_STYLE) & \
+                    ~WS_MAXIMIZEBOX &
+                    ~WS_MINIMIZEBOX &
+                    ~WS_THICKFRAME &
+                    ~WS_SIZEBOX
+    ));
+//    SetProcessWorkingSetSize(hwnd, WS_MAXIMIZE, WS_MAXIMIZE);
+//    Setwindowlong
     if (hwnd == NULL)
     {
         return 0;
     }
 
-    ShowWindow(hwnd, nCmdShow);
+    ShowWindow(hwnd, SW_SHOWMAXIMIZED );
+//    RECT rect = getLocalCoordinates(hwnd);
 
     // Run the message loop.
 
