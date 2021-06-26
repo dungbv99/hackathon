@@ -6,26 +6,15 @@
 #include <winhttp.h>
 #include "MyCreateBox/MyCreateBox.h"
 #include "HandleButton/HandleButton.h"
+#include "FrontEnd/Login.h"
 using namespace std;
+
+
 ofstream logFile("log.txt");
 int widthScreen = GetSystemMetrics(SM_CXFULLSCREEN);
 int heightScreen = GetSystemMetrics(SM_CYMAXIMIZED);
 int startPoint = GetSystemMetrics(ARW_TOPLEFT);
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-
-
-void Login(HWND hwnd){
-    int xUN = startPoint + widthScreen/ 2 - 300;
-    int yUN = (startPoint + heightScreen) /2 - 200;
-    pair<int, int> nextCoordinates1 = CreateStaticBox(hwnd, L"User Name", xUN, yUN);
-    HWND hwndUserName = CreateEditBox(hwnd, nextCoordinates1.first, yUN, 200, 20);
-    pair<int, int> nextCoordinates2 = CreateStaticBox(hwnd, L"Pass Word", xUN, nextCoordinates1.second);
-    HWND hwndPassWd = CreateEditBox(hwnd, nextCoordinates1.first, nextCoordinates1.second, 200, 20);
-    CreateButtonBox(hwnd, L"Login", xUN, nextCoordinates2.second, LOGINBUTTON);
-}
-
-
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
@@ -97,7 +86,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_COMMAND:
             switch (wParam) {
                 case LOGINBUTTON:
-                    logFile << "loginButton \n";
+                    HandleLoginButton();
                     return 0;
             }
             return 0;

@@ -15,7 +15,11 @@ pair<int,int> CreateStaticBox(HWND hwnd, wchar_t name[], int x, int y){
 }
 
 HWND CreateEditBox(HWND hwnd, int x, int y, int nWidth, int nHeight){
-    return CreateWindowW(L"edit", L"", WS_VISIBLE | WS_CHILD | WS_BORDER, x, y, nWidth, nHeight, hwnd, NULL, NULL, NULL);
+    return CreateWindowW(L"edit", L"", WS_VISIBLE | WS_CHILD | WS_BORDER  , x, y, nWidth, nHeight, hwnd, NULL, NULL, NULL);
+}
+
+HWND CreateSecretEditBox(HWND hwnd, int x, int y, int nWidth, int nHeight){
+    return CreateWindowW(L"edit", L"", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_PASSWORD , x, y, nWidth, nHeight, hwnd, NULL, NULL, NULL);
 }
 
 void CreateButtonBox(HWND hwnd, wchar_t name[], int x, int y, int idButton){

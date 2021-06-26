@@ -3,4 +3,4 @@ project(hackathon)
 
 set(WIN32  14)
 
-add_executable(hackathon WIN32 main.cpp MyCreateBox/MyCreateBox.cpp MyCreateBox/MyCreateBox.h HandleButton/HandleButton.cpp HandleButton/HandleButton.h)
+add_executable(hackathon WIN32 main.cpp MyCreateBox/MyCreateBox.cpp MyCreateBox/MyCreateBox.h HandleButton/HandleButton.cpp HandleButton/HandleButton.h FrontEnd/Login.cpp FrontEnd/Login.h FrontEnd/test.cpp FrontEnd/test.h)
