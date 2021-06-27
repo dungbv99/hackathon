@@ -4,7 +4,6 @@
 
 #include "windows.h"
 #include "string"
-#include "test.h"
 using namespace std;
 
 #ifndef HACKATHON_LOGIN_H

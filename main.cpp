@@ -14,11 +14,11 @@ ofstream logFile("log.txt");
 int widthScreen = GetSystemMetrics(SM_CXFULLSCREEN);
 int heightScreen = GetSystemMetrics(SM_CYMAXIMIZED);
 int startPoint = GetSystemMetrics(ARW_TOPLEFT);
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
-{
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"BkTrust";
 
