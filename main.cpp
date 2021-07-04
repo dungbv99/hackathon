@@ -1,12 +1,14 @@
+#define NOMINMAX 1
 #ifndef UNICODE
 #define UNICODE
 #endif
+
 #include <windows.h>
 #include "fstream"
 #include <winhttp.h>
-#include "MyCreateBox/MyCreateBox.h"
-#include "HandleButton/HandleButton.h"
-#include "FrontEnd/Login.h"
+#include "MyCreateBox.h"
+#include "HandleButton.h"
+#include "Login.h"
 
 using namespace std;
 

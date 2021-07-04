@@ -1,13 +1,16 @@
 //
 // Created by ADMIN on 26/06/2021.
 //
-
+#define NOMINMAX 1
 #include "Login.h"
 #include <windows.h>
 #include "iostream"
-#include "../MyCreateBox/MyCreateBox.h"
-#include "../HandleButton/HandleButton.h"
+#include "MyCreateBox.h"
+#include "HandleButton.h"
 #include "string"
+#include "model.h"
+#include "HttpLib.h"
+#include "env.h"
 using namespace std;
 HWND hwndUserName;
 HWND hwndPassWd;
@@ -36,5 +39,7 @@ void HandleLoginButton(){
             passWd,
     };
 
-    cout << "name " <<  user.UserName << "     " << " passwd " << user.PassWd << "\n" ;
+//    cout << "name " <<  user.userName << "     " << " passwd " << user.passWd << "\n" ;
+//    LPSTR  data = user.getStringJson();
+    HttpPost(SERVER_IP, SERVER_PORT, L"/login/", user.getStringJson());
 }
