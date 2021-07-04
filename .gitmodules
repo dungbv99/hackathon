@@ -1,3 +1,0 @@
-[submodule "vendor/json_struct"]
-	path = vendor/json_struct
-	url = https://github.com/jorgen/json_struct.git
